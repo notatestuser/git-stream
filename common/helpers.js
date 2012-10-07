@@ -20,3 +20,10 @@ String.prototype.rjust = function( width, padding ) {
   else
     return this.toString();
 };
+
+module.exports = {
+
+  times: function(n, iterator, context) {
+    for (var i = 0; i < n; i++) iterator.call(context, i);
+  }
+};

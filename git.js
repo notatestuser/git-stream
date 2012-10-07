@@ -1,9 +1,11 @@
+
 //
 // node-git
 //
-var helpers = require('helpers');
+var helpers = require('./common/helpers');
 
 var Git = module.exports = function Git() {
+
 
 };
 
@@ -62,7 +64,7 @@ Git.prototype.stringToBytes = function(string) {
 Git.prototype.toBinaryString = function(binary) {
   
   if (Array.isArray(binary)) {
-    return Git.bytesToString(binary)
+    return this.bytesToString(binary)
   }
   else {
     return binary
@@ -100,8 +102,9 @@ Git.prototype.escapeHTML = function(s) {
 //
 //
 Git.prototype.applyDelta = (function() {
-  
+
   var matchLength = function(stream) {
+
     var data = stream.data
     var offset = stream.offset
     var result = 0
@@ -123,7 +126,7 @@ Git.prototype.applyDelta = (function() {
   
   return function(baseDataString, delta) {
 
-    var baseData = Git.stringToBytes(baseDataString)
+    var baseData = this.stringToBytes(baseDataString)
     var stream = {data: delta, offset: 0, length: delta.length}
     
     var baseLength = matchLength(stream)
@@ -148,9 +151,10 @@ Git.prototype.applyDelta = (function() {
       if (opcode == 0) {
         throw(Error("Don't know what to do with a delta opcode 0"))
       } else if ((opcode & 0x80) != 0) {
+
         var value
         var shift = 0
-        _(4).times(function() {
+        helpers.times(4, function() {
           if ((opcode & 0x01) != 0) {
             value = stream.data[stream.offset]
             stream.offset += 1
@@ -160,7 +164,7 @@ Git.prototype.applyDelta = (function() {
           shift += 8
         })
         shift = 0
-        _(2).times(function() {
+        helpers.times(2, function() {
           if ((opcode & 0x01) != 0) {
             value = stream.data[stream.offset]
             stream.offset += 1
@@ -173,13 +177,16 @@ Git.prototype.applyDelta = (function() {
           copyLength = (1<<16)
         }
         
+        //
         // TODO: check if this is a version 2 packfile and apply copyFromResult if so
-        copyFromResult = (opcode & 0x01)
-        resultData += Git.bytesToString(baseData.slice(copyOffset, copyOffset + copyLength))
+        //
+        copyFromResult = (opcode & 0x01);
+        resultData += this.bytesToString(baseData.slice(copyOffset, copyOffset + copyLength));
         
-      } else if ((opcode & 0x80) == 0) {
-        resultData += Git.bytesToString(stream.data.slice(stream.offset, stream.offset + opcode))
-        stream.offset += opcode
+      } 
+      else if ((opcode & 0x80) == 0) {
+        resultData += this.bytesToString(stream.data.slice(stream.offset, stream.offset + opcode));
+        stream.offset += opcode;
       }
     }
     

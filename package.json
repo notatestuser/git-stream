@@ -2,9 +2,26 @@
   "name": "node-git",
   "description": "A subset of git features implemented in nodejs",
   "version": "0.0.1",
-  
   "dependencies": {},
   "devDependencies": {
     "tap": "*"
+  },
+  "contributors": [
+    { "name": "Paolo Fragomeni", "email": "paolo@nodejitsu.com" }
+  ],
+  "keywords": [
+    "git",
+    "scm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/hij1nx/node-git.git" 
+  },
+  "main": "./git.js",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "engines": {
+    "node": ">= 0.9.0" 
   }
 }
