@@ -1,0 +1,10 @@
+{
+  "name": "node-git",
+  "description": "A subset of git features implemented in nodejs",
+  "version": "0.0.1",
+  
+  "dependencies": {},
+  "devDependencies": {
+    "tap": "*"
+  }
+}
