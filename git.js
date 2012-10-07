@@ -19,18 +19,14 @@ Git.prototype.FileDiff = require('./lib/filediff');
 Git.prototype.OBJECT_TYPES = ["tag", "commit", "tree", "blob"];
 Git.prototype.REMOTE_TYPE = "HttpRemote";
 
-//  
+var errors = [];
+
+//
 // Print an error either to the console if in node, or to div#jsgit-errors
 // if in the client.
 //
 Git.prototype.handleError = function(message) {
-
-  if (jsGitInNode) {
-    log(message)
-  }
-  else {
-    $('#jsgit-errors').append(message)
-  }
+  console.log(message);
 };
   
 //
@@ -40,6 +36,7 @@ Git.prototype.bytesToString = function(bytes) {
 
   var result = "";
   var i;
+
   for (i = 0; i < bytes.length; i++) {
     result = result.concat(String.fromCharCode(bytes[i]));
   }
