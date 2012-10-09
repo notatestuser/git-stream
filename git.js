@@ -1,12 +1,38 @@
-
 //
 // node-git
 //
 var helpers = require('./common/helpers');
+var util = require('util');
+var Stream = require("stream").Stream;
 
-var Git = module.exports = function Git() {
+var stream = new Stream();
 
+var Git = module.exports = function Git(opts) {
 
+  var that = this;
+  var buf = [];
+  var destroyed = false;
+
+  if (!(this instanceof Git)) {
+    return new Git(opts);
+  }
+
+  Stream.call(this);
+
+  that.writable = true;
+  that.readable = true;
+
+};
+
+util.inherits(Git, Stream);
+
+Git.prototype.write = function(data) {
+};
+
+Git.prototype.read = function(data) {
+};
+
+Git.prototype.end = function(data) {
 };
 
 Git.prototype.Remote = require('./lib/remote');
@@ -17,19 +43,12 @@ Git.prototype.Pack = require('./lib/pack');
 Git.prototype.Objects = require('./lib/objects');
 Git.prototype.TreeDiff = require('./lib/treediff');
 Git.prototype.FileDiff = require('./lib/filediff');
+Git.prototype.diff = require('./common/diff');
 
 Git.prototype.OBJECT_TYPES = ["tag", "commit", "tree", "blob"];
 Git.prototype.REMOTE_TYPE = "HttpRemote";
 
 var errors = [];
-
-//
-// Print an error either to the console if in node, or to div#jsgit-errors
-// if in the client.
-//
-Git.prototype.handleError = function(message) {
-  console.log(message);
-};
   
 //
 // Turn an array of bytes into a String

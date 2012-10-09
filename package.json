@@ -1,6 +1,6 @@
 {
-  "name": "node-git",
-  "description": "A subset of git features implemented in nodejs",
+  "name": "git-stream",
+  "description": "A subset of git features implemented in nodejs with streams",
   "version": "0.0.1",
   "dependencies": {},
   "devDependencies": {
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/hij1nx/node-git.git" 
+    "url": "http://github.com/hij1nx/git-stream.git" 
   },
   "main": "./git.js",
   "scripts": {
