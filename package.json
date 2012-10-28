@@ -2,7 +2,9 @@
   "name": "git-stream",
   "description": "A subset of git features implemented in nodejs with streams",
   "version": "0.0.1",
-  "dependencies": {},
+  "dependencies": {
+    "request": "*"
+  },
   "devDependencies": {
     "tap": "*"
   },

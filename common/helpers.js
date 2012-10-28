@@ -25,10 +25,29 @@ String.prototype.rjust = function( width, padding ) {
 var forEach = Array.prototype.forEach;
 var breaker = {};
 
-module.exports = {
+var methods = {
 
   times: function(n, iterator, context) {
     for (var i = 0; i < n; i++) iterator.call(context, i);
+  },
+
+  values: function(obj) {
+    var a = [];
+    for(var key in obj) { 
+      a.push(obj[key]); 
+    }
+    return a;
+  },
+
+  extend: function(obj) {
+
+    methods.each(slice.call(arguments, 1), function(source) {
+
+      for (var prop in source) {
+        obj[prop] = source[prop];
+      }
+    });
+    return obj;
   },
   
   each: function(obj, iterator, context) {
@@ -46,10 +65,12 @@ module.exports = {
       }
     } else {
       for (var key in obj) {
-        if (_.has(obj, key)) {
+        if (obj.hasOwnProperty(key)) {
           if (iterator.call(context, obj[key], key, obj) === breaker) { return; }
         }
       }
     }
   };
 };
+
+module.exports = methods;
