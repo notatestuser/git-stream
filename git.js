@@ -41,9 +41,7 @@ Git.prototype.HttpRemote = require('./lib/httpremote');
 Git.prototype.BinaryFile = require('./lib/binaryfile');
 Git.prototype.Pack = require('./lib/pack');
 Git.prototype.Objects = require('./lib/objects');
-Git.prototype.TreeDiff = require('./lib/treediff');
 Git.prototype.FileDiff = require('./lib/filediff');
-Git.prototype.diff = require('./common/diff');
 
 Git.prototype.OBJECT_TYPES = ["tag", "commit", "tree", "blob"];
 Git.prototype.REMOTE_TYPE = "HttpRemote";

@@ -2,8 +2,6 @@
 var test = require('tap').test;
 var Git = require('../../git');
 
-require('../lib/git-server');
-
 var git = new Git();
 
 module.exports = {
@@ -12,9 +10,9 @@ module.exports = {
   
     test.plan(1);
 
-    var file1 = ""
-    var file2 = ["a", "b", "c"].join("\n")
-    var diff = new Git.Diff(file1, file2)
+    var file1 = "";
+    var file2 = ["a", "b", "c"].join("\n");
+    var diff = git.FileDiff(file1, file2);
   
     test.deepEqual(
       diff.info, 
@@ -34,7 +32,7 @@ module.exports = {
 
     var file1 = ["a", "b", "c"].join("\n")
     var file2 = ""
-    var diff = new Git.Diff(file1, file2)
+    var diff = git.FileDiff(file1, file2)
     
     test.deepEqual(
       diff.info, 
@@ -56,7 +54,7 @@ module.exports = {
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "c", "d", "e", "f", "g", "h"].join("\n");
 
-    var diff = new Git.Diff(file1, file2);
+    var diff = git.FileDiff(file1, file2);
 
     test.deepEqual(
       diff.info, 
@@ -80,7 +78,7 @@ module.exports = {
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n")
     var file2 = ["0", "1", "a", "b", "c", "d", "e", "f"].join("\n")
     
-    var diff = new Git.Diff(file1, file2);
+    var diff = git.FileDiff(file1, file2);
 
     test.deepEqual(
       diff.info, 
@@ -104,7 +102,7 @@ module.exports = {
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "c", "0", "1", "d", "e", "f"].join("\n");
 
-    var diff = new Git.Diff(file1, file2);
+    var diff = git.FileDiff(file1, file2);
 
     test.deepEqual(
       diff.info, 
@@ -130,7 +128,7 @@ module.exports = {
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "c", "d"].join("\n");
-    var diff = new Git.Diff(file1, file2);
+    var diff = git.FileDiff(file1, file2);
 
     test.deepEqual(
       diff.info, 
@@ -154,7 +152,7 @@ module.exports = {
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["c", "d", "e", "f"].join("\n");
     
-    var diff = new Git.Diff(file1, file2);
+    var diff = git.FileDiff(file1, file2);
     
     test.deepEqual(
       diff.info, 
@@ -178,7 +176,7 @@ module.exports = {
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "e", "f"].join("\n");
     
-    var diff = new Git.Diff(file1, file2);
+    var diff = git.FileDiff(file1, file2);
     
     test.deepEqual(
       diff.info, 
@@ -203,7 +201,7 @@ module.exports = {
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n")
     var file2 = ["a", "b", "0", "1", "e", "f"].join("\n")
     
-    var diff = new Git.Diff(file1, file2)
+    var diff = git.FileDiff(file1, file2)
     
     test.deepEqual(
       diff.info, 
@@ -230,7 +228,7 @@ module.exports = {
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "0", "1", "2", "3", "e", "f"].join("\n");
     
-    var diff = new Git.Diff(file1, file2);
+    var diff = git.FileDiff(file1, file2);
     
     test.deepEqual(
       diff.info, 
@@ -259,7 +257,7 @@ module.exports = {
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "0", "1", "f"].join("\n");
     
-    var diff = new Git.Diff(file1, file2);
+    var diff = git.FileDiff(file1, file2);
     
     test.deepEqual(
       diff.info, 
@@ -285,7 +283,7 @@ module.exports = {
     var file1 = "123456789".split("").join("\n")
     var file2 = "123xy4567zq89".split("").join("\n")
     
-    var diff = new Git.Diff(file1, file2, {context: 1})
+    var diff = git.FileDiff(file1, file2, {context: 1})
     
     test.deepEqual(
       diff.info[0], 
@@ -320,7 +318,7 @@ module.exports = {
     var file1 = "123456789".split("").join("\n");
     var file2 = "1345689".split("").join("\n");
     
-    var diff = new Git.Diff(file1, file2, {context: 1});
+    var diff = git.FileDiff(file1, file2, {context: 1});
 
     test.deepEqual(
       diff.info[0], 
@@ -353,7 +351,7 @@ module.exports = {
     var file1 = "123456789".split("").join("\n")
     var file2 = "123xy45689".split("").join("\n")
     
-    var diff = new Git.Diff(file1, file2, {context: 1})
+    var diff = git.FileDiff(file1, file2, {context: 1})
     
     test.deepEqual(
       diff.info[0], 
@@ -387,7 +385,7 @@ module.exports = {
     var file1 = "123456789".split("").join("\n");
     var file2 = "134567xq89".split("").join("\n");
 
-    var diff = new Git.Diff(file1, file2, {context: 1});
+    var diff = git.FileDiff(file1, file2, {context: 1});
     
     test.deepEqual(
       diff.info[0], 
@@ -419,7 +417,7 @@ module.exports = {
     var file1 = "123456789".split("").join("\n");
     var file2 = "123xy4zq56789".split("").join("\n");
     
-    var diff = new Git.Diff(file1, file2, {context: 1});
+    var diff = git.FileDiff(file1, file2, {context: 1});
     
     test.equal(diff.info.length, 1);
 
@@ -447,7 +445,7 @@ module.exports = {
     var file1 = "123456789".split("").join("\n");
     var file2 = "123xy4zq56789".split("").join("\n");
     
-    var diff = new Git.Diff(file1, file2, {context: 2});
+    var diff = git.FileDiff(file1, file2, {context: 2});
 
     test.equal(diff.info.length, 1);
 
@@ -466,8 +464,6 @@ module.exports = {
           {oldIndex: 6, newIndex: 10, line: "6", type:"context"}
         ]
       }
-    );
-    
+    ); 
   }
-
 };

@@ -276,7 +276,7 @@ var diff3_merge = function (a, o, b, excludeFalseConflicts) {
   return result;
 };
 
-var Diff = {
+var Diff = module.exports = {
 
   compare: function(file1, file2) {
 
@@ -328,7 +328,7 @@ var Diff = {
     return result;
   },
 
-  create: function(file1, file2) {
+  createPatch: function(file1, file2) {
 
     // We apply the LCD to build a JSON representation of a
     // diff(1)-style patch.
