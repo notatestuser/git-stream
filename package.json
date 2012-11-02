@@ -3,13 +3,18 @@
   "description": "A subset of git features implemented in nodejs with streams",
   "version": "0.0.1",
   "dependencies": {
-    "request": "*"
+    "request": "*",
+    "rimraf": "~2.0.2",
+    "glob": "~3.1.14"
   },
   "devDependencies": {
     "tap": "*"
   },
   "contributors": [
-    { "name": "Paolo Fragomeni", "email": "paolo@nodejitsu.com" }
+    {
+      "name": "Paolo Fragomeni",
+      "email": "paolo@nodejitsu.com"
+    }
   ],
   "keywords": [
     "git",
@@ -17,13 +22,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/hij1nx/git-stream.git" 
+    "url": "http://github.com/hij1nx/git-stream.git"
   },
   "main": "./git.js",
   "scripts": {
     "test": "node test/index.js"
   },
   "engines": {
-    "node": ">= 0.9.0" 
+    "node": ">= 0.9.0"
   }
 }
