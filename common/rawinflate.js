@@ -1,15 +1,8 @@
-/*
- * $Id: rawinflate.js,v 0.2 2009/03/01 18:32:24 dankogai Exp $
- *
- * original:
- * http://www.onicos.com/staff/iz/amuse/javascript/expert/inflate.txt
- */
-
-(function(){
 
 /* Copyright (C) 1999 Masanao Izumo <iz@onicos.co.jp>
- * Version: 1.0.0.1
- * LastModified: Dec 25 1999
+ * Copyright (C) 2012 Paolo Fragomeni <paolo@nodejitsu.com>
+ * Version: 1.0.0.2
+ * LastModified: Oct 28 2012
  */
 
 /* Interface:
@@ -727,7 +720,7 @@ var zip_inflate_internal = function(buff, off, size) {
     return n;
 }
 
-var zip_inflate = function(str) {
+var zip_inflate = module.exports = function(str) {
     var i, j;
 
     zip_inflate_start();
@@ -748,8 +741,3 @@ var zip_inflate = function(str) {
     result.compressedLength = zip_inflate_pos;
     return result;
 }
-
-if (! window.RawDeflate) RawDeflate = {};
-RawDeflate.inflate = zip_inflate;
-
-})();

@@ -35,12 +35,12 @@ Git.prototype.read = function(data) {
 Git.prototype.end = function(data) {
 };
 
+Git.prototype.objects = require('./lib/objects');
+
 Git.prototype.Remote = require('./lib/remote');
 Git.prototype.HttpRemote = require('./lib/httpremote');
 
-Git.prototype.BinaryFile = require('./lib/binaryfile');
 Git.prototype.Pack = require('./lib/pack');
-Git.prototype.Objects = require('./lib/objects');
 Git.prototype.FileDiff = require('./lib/filediff');
 
 Git.prototype.OBJECT_TYPES = ["tag", "commit", "tree", "blob"];
@@ -53,11 +53,10 @@ var errors = [];
 //
 Git.prototype.bytesToString = function(bytes) {
 
-  var result = "";
-  var i;
+  var result = '';
 
-  for (i = 0; i < bytes.length; i++) {
-    result = result.concat(String.fromCharCode(bytes[i]));
+  for (var i = 0; i < bytes.length; i++) {
+    result += String.fromCharCode(bytes[i]);
   }
   return result;
 };
@@ -102,7 +101,7 @@ Git.prototype.nextPktLine = function(data) {
 //
 Git.prototype.stripZlibHeader = function(zlib) {
 
-  return zlib.slice(2)
+  return zlib.slice(2);
 };
   
 //

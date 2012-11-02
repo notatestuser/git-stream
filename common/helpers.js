@@ -49,6 +49,36 @@ var methods = {
     });
     return obj;
   },
+
+  any: function(obj, iterator, context) {
+
+    if(!iterator) {
+      iterator = function(value) { return value; };
+    }
+
+    var result = false;
+
+    if (obj == null) {
+      return result;
+    }
+
+    return obj.some(iterator, context);
+  },
+
+  find: function(obj, iterator, context) {
+    
+    var result;
+    
+    methods.any(obj, function(value, index, list) {
+    
+      if (iterator.call(context, value, index, list)) {
+    
+        result = value;
+        return true;
+      }
+    });
+    return result;
+  },
   
   each: function(obj, iterator, context) {
 

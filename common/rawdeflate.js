@@ -1,13 +1,6 @@
-/*
- * $Id: rawdeflate.js,v 0.3 2009/03/01 19:05:05 dankogai Exp dankogai $
- *
- * Original:
- *   http://www.onicos.com/staff/iz/amuse/javascript/expert/deflate.txt
- */
-
-(function(){
 
 /* Copyright (C) 1999 Masanao Izumo <iz@onicos.co.jp>
+ * Copyright (C) 2012 Paolo Fragomeni <paolo@nodejitsu.com>
  * Version: 1.0.1
  * LastModified: Dec 25 1999
  */
@@ -742,7 +735,7 @@ var zip_deflate_better = function() {
     }
 }
 
-var zip_init_deflate = function() {
+var zip_init_deflate = module.exports = function() {
     if(zip_eofile)
 	return;
     zip_bi_buf = 0;
@@ -1664,8 +1657,3 @@ var zip_deflate = function(str, level) {
     zip_deflate_data = null; // G.C.
     return aout.join("");
 }
-
-if (! window.RawDeflate) RawDeflate = {};
-RawDeflate.deflate = zip_deflate;
-
-})();
