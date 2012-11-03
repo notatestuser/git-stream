@@ -3,12 +3,13 @@
   "description": "A subset of git features implemented in nodejs with streams",
   "version": "0.0.1",
   "dependencies": {
-    "request": "*",
-    "rimraf": "~2.0.2",
-    "glob": "~3.1.14"
+    "request": "*"
   },
   "devDependencies": {
-    "tap": "*"
+    "tap": "*",
+    "rimraf": "~2.0.2",
+    "glob": "~3.1.14",
+    "cpr": "0.0.6"
   },
   "contributors": [
     {
