@@ -7,6 +7,7 @@ var tap = require('tap').test;
 var pathname = path.join(__dirname, 'tests');
 
 var filter = process.argv[2] || null
+var caseFilter = process.argv[3] || null
 
 fs.readdirSync(pathname).forEach(function (name) {
 
@@ -20,7 +21,9 @@ fs.readdirSync(pathname).forEach(function (name) {
     var tests = require(rawfile);
 
     for (var test in tests) {
-      tap(test, tests[test]);
-   }
+      if (!caseFilter || test.indexOf(caseFilter) > -1) {
+        tap(test, tests[test]);
+      }
+    }
   }
 });
