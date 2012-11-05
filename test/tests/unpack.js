@@ -5,7 +5,7 @@ var repo = require('../fixtures/repo');
 var Buffer = require('buffer').Buffer;
 
 var unpack = require('../../lib/unpack');
-
+var noop = function() { return null };
 
 module.exports = {
   "unpack: not a buffer" : function(t) {
@@ -14,7 +14,7 @@ module.exports = {
       t.ok(err);
       t.ok(err.message.indexOf('expects a buffer') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: invalid signature" : function(t) {
@@ -23,7 +23,7 @@ module.exports = {
       t.ok(err);
       t.ok(err.message.indexOf('signature') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: valid signature" : function(t) {
@@ -31,7 +31,7 @@ module.exports = {
     unpack(new Buffer('PACK'), function(err) {
       t.ok(!err || err.message.indexOf('signature') < 0);
       t.end();
-    });
+    }, noop);
   },
 
 
@@ -45,7 +45,7 @@ module.exports = {
     unpack(buffer, function(err) {
       t.ok(err.message.indexOf('version') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: invalid version (value)" : function(t) {
@@ -59,7 +59,7 @@ module.exports = {
     unpack(new Buffer('PACK'), function(err) {
       t.ok(err.message.indexOf('version') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: valid version" : function(t) {
@@ -73,7 +73,7 @@ module.exports = {
     unpack(buffer, function(err, obj) {
       t.ok(!err || err.message.indexOf('version') < 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: invalid object count (buffer length)" : function(t) {
@@ -87,7 +87,7 @@ module.exports = {
     unpack(buffer, function(err) {
       t.ok(err.message.indexOf('object count') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: valid object count" : function(t) {
@@ -103,7 +103,7 @@ module.exports = {
       t.ok(!err || err.message.indexOf('object count') < 0);
       t.equals(obj.count, 150);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: valid object count (real file)" : function(t) {
@@ -118,7 +118,7 @@ module.exports = {
 
         t.equal(obj.count, packFile.totalObjects);
         t.end();
-      });
+      }, noop);
     });
   },
 
@@ -134,7 +134,7 @@ module.exports = {
     unpack(buffer, function(err, obj) {
       t.ok(err.message.indexOf('object entry') > 0);
       t.end();
-    });
+    }, noop);
   },
 
 
@@ -155,10 +155,27 @@ module.exports = {
           t.ok(obj.offset);
         });
 
-        t.end()
+        t.end();
       });
     });
   },
+
+  "unpack: injection of make for testing object creation" : function(t) {
+    repo.getPackFile(function(err, packFile) {
+      unpack(
+        packFile.buffer,
+        function(err, obj) {
+          t.end();
+        },
+        function make(sha, type, data) {
+          // TODO: sha
+          t.ok(type);
+          t.ok(data);
+          t.ok(Buffer.isBuffer(data));
+        }
+      );
+    });
+  }
 
 
   /*
