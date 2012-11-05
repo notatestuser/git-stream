@@ -150,9 +150,10 @@ module.exports = {
         var types = ['commit', 'commit', 'tree', 'blob', 'tree', 'blob'];
 
         obj.objects.forEach(function(obj, i) {
-          t.ok(obj.buffer, 'got a buffer');
-          t.equals(obj.type, types[i], 'the object is the correct type');
-          t.ok(obj.offset, 'the object has the correct offset');
+          t.ok(obj.buffer);
+          console.log(obj);
+          t.equals(obj.type, types[i]);
+          t.ok(obj.offset);
         });
 
         t.end();
@@ -162,11 +163,11 @@ module.exports = {
 
   "unpack: injection of make for testing object creation" : function(t) {
     repo.getPackFile(function(err, packFile) {
+      // subtract 3 which includes summary, status, newline
+      t.plan((packFile.verifyString.split('\n').length - 3)*3);
       unpack(
         packFile.buffer,
-        function(err, obj) {
-          t.end();
-        },
+        function(err, obj) {},
         function make(sha, type, data) {
           // TODO: sha
           t.ok(type);
