@@ -5,13 +5,13 @@ var repo = require('../fixtures/repo');
 var Buffer = require('buffer').Buffer;
 var objects = require('../../lib/objects')
 
-var unpack = require('../../lib/unpack');
+var pack = require('../../lib/pack');
 var noop = function() { return null };
 
 module.exports = {
   "unpack: not a buffer" : function(t) {
     t.plan(2);
-    unpack('not a buffer', function(err) {
+    pack.unpack('not a buffer', function(err) {
       t.ok(err);
       t.ok(err.message.indexOf('expects a buffer') > 0);
       t.end();
@@ -20,7 +20,7 @@ module.exports = {
 
   "unpack: invalid signature" : function(t) {
     t.plan(2);
-    unpack(new Buffer(['']), function(err) {
+    pack.unpack(new Buffer(['']), function(err) {
       t.ok(err);
       t.ok(err.message.indexOf('signature') > 0);
       t.end();
@@ -29,7 +29,7 @@ module.exports = {
 
   "unpack: valid signature" : function(t) {
     t.plan(1);
-    unpack(new Buffer('PACK'), function(err) {
+    pack.unpack(new Buffer('PACK'), function(err) {
       t.ok(!err || err.message.indexOf('signature') < 0);
       t.end();
     }, noop);
@@ -43,7 +43,7 @@ module.exports = {
     buffer.fill(0);
     buffer.write('PACK');
 
-    unpack(buffer, function(err) {
+    pack.unpack(buffer, function(err) {
       t.ok(err.message.indexOf('version') > 0);
       t.end();
     }, noop);
@@ -57,7 +57,7 @@ module.exports = {
     buffer.write('PACK');
     buffer.writeUInt8(6, 7);
 
-    unpack(new Buffer('PACK'), function(err) {
+    pack.unpack(new Buffer('PACK'), function(err) {
       t.ok(err.message.indexOf('version') > 0);
       t.end();
     }, noop);
@@ -71,7 +71,7 @@ module.exports = {
     buffer.write('PACK');
     buffer.writeUInt8(2, 7);
 
-    unpack(buffer, function(err, obj) {
+    pack.unpack(buffer, function(err, obj) {
       t.ok(!err || err.message.indexOf('version') < 0);
       t.end();
     }, noop);
@@ -85,7 +85,7 @@ module.exports = {
     buffer.write('PACK');
     buffer.writeUInt8(2, 7);
 
-    unpack(buffer, function(err) {
+    pack.unpack(buffer, function(err) {
       t.ok(err.message.indexOf('object count') > 0);
       t.end();
     }, noop);
@@ -100,7 +100,7 @@ module.exports = {
     buffer.writeUInt8(2, 7);
     buffer.writeUInt32BE(150, 8);
 
-    unpack(buffer, function(err, obj) {
+    pack.unpack(buffer, function(err, obj) {
       t.ok(!err || err.message.indexOf('object count') < 0);
       t.equals(obj.count, 150);
       t.end();
@@ -110,7 +110,7 @@ module.exports = {
   "unpack: valid object count (real file)" : function(t) {
     t.plan(2);
     repo.getPackFile(function(err, packFile) {
-      unpack(packFile.buffer, function(err, obj) {
+      pack.unpack(packFile.buffer, function(err, obj) {
 
         // from previous observation, the packfile had 3 objects in it
         // ensure sanity before we assume that we actually parsed the packfile
@@ -142,7 +142,7 @@ module.exports = {
   "unpack: valid object entries (real file)" : function(t) {
 
     repo.getPackFile(function(err, packFile) {
-      unpack(packFile.buffer, function(err, obj) {
+      pack.unpack(packFile.buffer, function(err, obj) {
         t.plan(2+obj.objects.length);
         // ensure sanity before we assume that we actually parsed the packfile correctly.
         t.ok(packFile.totalObjects > 0, 'the packfie has more than 0 objects');
@@ -162,7 +162,7 @@ module.exports = {
     repo.getPackFile(function(err, packFile) {
       // subtract 3 which includes summary, status, newline
       t.plan((packFile.verifyString.split('\n').length - 3)*3);
-      unpack(
+      pack.unpack(
         packFile.buffer,
         function(err, obj) {},
         function make(type, data) {
