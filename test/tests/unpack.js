@@ -142,18 +142,14 @@ module.exports = {
 
     repo.getPackFile(function(err, packFile) {
       unpack(packFile.buffer, function(err, obj) {
-        t.plan(2+obj.objects.length*3);
+        t.plan(2+obj.objects.length);
         // ensure sanity before we assume that we actually parsed the packfile correctly.
         t.ok(packFile.totalObjects > 0, 'the packfie has more than 0 objects');
         t.equal(obj.objects.length, packFile.totalObjects, 'the number objects in the buffer match the number of objects in the packfile');
 
-        var types = ['commit', 'commit', 'tree', 'blob', 'tree', 'blob'];
-
-        obj.objects.forEach(function(obj, i) {
-          t.ok(obj.buffer);
-          console.log(obj);
-          t.equals(obj.type, types[i]);
-          t.ok(obj.offset);
+        obj.objects.forEach(function(obj) {
+          var verifyObj = packFile.verifyObjs.shift();
+          t.equals(obj.type, verifyObj.type);
         });
 
         t.end();
