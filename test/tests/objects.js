@@ -1,6 +1,6 @@
 var objects = require('../../lib/objects'),
     repo = require('../fixtures/repo'),
-    unpack = require('../../lib/unpack'),
+    pack = require('../../lib/pack'),
     git = new (require('../../git'))(),
     commitParts = [
       'tree 039486ad38f1b796b5cb39b2548481016af44d8e',
@@ -65,7 +65,7 @@ module.exports = {
     repo.getPackFile(function(err, packFile) {
       t.ok(!err);
 
-      unpack(packFile.buffer, function(err, obj) {
+      pack.unpack(packFile.buffer, function(err, obj) {
         t.end();
       }, function make(type, data) {
         if (type === objects.TREE) {
