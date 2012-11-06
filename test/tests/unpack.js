@@ -3,6 +3,7 @@ var fs = require('fs');
 var test = require('tap').test;
 var repo = require('../fixtures/repo');
 var Buffer = require('buffer').Buffer;
+var objects = require('../../lib/objects')
 
 var unpack = require('../../lib/unpack');
 var noop = function() { return null };
@@ -149,7 +150,7 @@ module.exports = {
 
         obj.objects.forEach(function(obj) {
           var verifyObj = packFile.verifyObjs.shift();
-          t.equals(obj.type, verifyObj.type);
+          t.equals(obj.type, objects.stringToType(verifyObj.type));
         });
 
         t.end();
@@ -164,7 +165,7 @@ module.exports = {
       unpack(
         packFile.buffer,
         function(err, obj) {},
-        function make(sha, type, data) {
+        function make(type, data) {
           // TODO: sha
           t.ok(type);
           t.ok(data);

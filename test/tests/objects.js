@@ -13,9 +13,16 @@ var objects = require('../../lib/objects'),
     ];
 
 module.exports = {
+  "objects: creation (invalid type)" : function(t) {
+    var obj = objects.createObject('bla');
+
+    t.equal(obj.type, objects.BAD);
+    t.end();
+  },
+
   "objects [commit]: creation" : function(t) {
 
-    var commit = objects.make(null, 'commit', commitParts.join('\n'));
+    var commit = objects.createObject(objects.COMMIT, commitParts.join('\n'));
 
     t.equal(commit.tree, '039486ad38f1b796b5cb39b2548481016af44d8e');
     t.equal(commit.parents.length, 1);
@@ -27,9 +34,28 @@ module.exports = {
 
     t.end();
   },
+
+  "objects [commit]: creation (string) type)" : function(t) {
+
+    var commit = objects.createObject('commit');
+    var commit2 = objects.createObject(objects.COMMIT);
+
+    t.equal(commit.type, commit2.type);
+    t.end();
+  },
+
+  "objects [commit]: creation (numeric) type)" : function(t) {
+
+    var commit = objects.createObject(objects.COMMIT);
+    var commit2 = objects.createObject(objects.COMMIT);
+
+    t.equal(commit.type, commit2.type);
+    t.end();
+  },
+
   "objects [commit]: serialization" : function(t) {
     var commitString = commitParts.join('\n');
-    var commit = objects.make(null, 'commit', commitString);
+    var commit = objects.createObject(objects.COMMIT, commitString);
     t.equal(commit.toString(), commitString);
 
     t.end();
@@ -41,11 +67,11 @@ module.exports = {
 
       unpack(packFile.buffer, function(err, obj) {
         t.end();
-      }, function make(sha, type, data) {
-        if (type === 'tree') {
-          var tree = objects.make(sha, type, data);
+      }, function make(type, data) {
+        if (type === objects.TREE) {
+          var tree = objects.createObject(type, data);
 
-          t.equal(tree.type, 'tree');
+          t.equal(tree.type, objects.TREE);
           t.ok(tree.nodes.length > 0);
 
           return tree;
