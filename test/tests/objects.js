@@ -38,20 +38,20 @@ module.exports = {
     t.plan(1)
     repo.getPackFile(function(err, packFile) {
       t.ok(!err);
+
       unpack(packFile.buffer, function(err, obj) {
-console.log(JSON.stringify(obj , null, '  '));
-      t.end();
+        t.end();
       }, function make(sha, type, data) {
         if (type === 'tree') {
           var tree = objects.make(sha, type, data);
+
+          t.equal(tree.type, 'tree');
+          t.ok(tree.nodes.length > 0);
+
           return tree;
         }
         return null;
       });
-
-    })
+    });
   }
-
-
-
-}
+};

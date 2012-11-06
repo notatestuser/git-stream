@@ -25,6 +25,24 @@ module.exports.getPackFile = function(fn) {
 
         exec('chmod +xrw readme2.md && git add readme2.md && git commit -am "add test" && git repack', packRepoOpts, function() {
           exec('git verify-pack -v .git/objects/pack/pack-*.idx', packRepoOpts, function(e, verifyString) {
+
+            var verifyParts = verifyString.split('\n'), verifyObjs = [];
+            verifyParts.pop();
+            verifyParts.pop();
+
+            verifyParts.forEach(function(line) {
+              var parts = line.split(' ');
+              var obj = {
+                sha : parts.shift(),
+                type : parts.shift(),
+                uncompressedSize : parts.shift(),
+                compressedSize : parts.shift(),
+                offset : parts.shift(),
+              };
+              verifyObjs.push(obj);
+            });
+
+
             exec('git count-objects -v', packRepoOpts, function(err, stdout) {
               if (err) throw err;
 
@@ -45,7 +63,8 @@ module.exports.getPackFile = function(fn) {
                      fn(null, {
                        totalObjects: count,
                        buffer: buffer,
-                       verifyString: verifyString
+                       verifyString: verifyString,
+                       verifyObjs: verifyObjs
                      });
                   });
                 });
