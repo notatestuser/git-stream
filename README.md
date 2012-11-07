@@ -54,11 +54,8 @@ net.createServer(function(socket) {
 
     data
       .pipe(gitstream.Repo())
-      .on('end', function(repo) {
-        repo.checkout('master', function() {
-          repo.on('file', onfile)
-        })
-      })
+      .pipe(gitstream.checkout('master'))
+      .on('file', onfile)
   })
 
 }).listen(8000)
