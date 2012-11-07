@@ -4,53 +4,35 @@
 ```js
 var gitstream = require('git-stream')
 
-var repo = gitstream.Repo()
+var r = gitstream.Repo()
 
 //
 // get a repo from disk
 //
-repo
-  .read('./repoA')
-  .on('end', function() {
-
-  })
+// r.read('./repoA').pipe(r.push('origin', 'master'))
 
 //
-// add an origin
+// add a remote
 //
 
-repo.remote.add({
-  name: 'origin', 
-  port: 8000, 
-  address: '127.0.0.1', 
+r.remote.add({
+  name: 'origin',
+  branch: 'master',
+  port: 8000,
+  address: '127.0.0.1',
   id: 'username/origin'
-});
+})
 
-repo.remote.add({
-  name: 'fork', 
-  port: 8000, 
-  address: '127.0.0.1', 
-  id: 'username/fork'
-});
-
-repo.pull('origin')
-
-repo
-  .pull('fork')
-  .on('conflict', function(conflicts) {
-    console.dir(conflicts);
-    process.exit(0);
-  })
+var file = fs.createReadStream('./README.md')
 
 //
-// add some stuff to it
+// add a file, commit it and push it to the remote
 //
-repo.add(fs.createReadStream('./README.md'))
+r.pull('origin')
+  .pipe(r.add(file))
+  .pipe(r.commit({ m: 'first commit!' }))
+  .pipe(r.push('origin'))
 
-//
-// commit some stuff and push
-//
-repo.commit({ m: 'first commit!' }).push('origin')
 ```
 
 # As a server
