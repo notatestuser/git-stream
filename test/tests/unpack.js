@@ -132,8 +132,8 @@ module.exports = {
     buffer.writeUInt8(2, 7);
     buffer.writeUInt32BE(150, 8);
 
-    unpack(buffer, function(err, obj) {
-      t.ok(err.message.indexOf('object entry') > 0, 'the message has an entry');
+    pack.unpack(buffer, function(err, obj) {
+      t.ok(err.message.indexOf('object entry') > 0);
       t.end();
     }, noop);
   },

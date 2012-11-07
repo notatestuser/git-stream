@@ -1,5 +1,6 @@
 var test = require('tap').test;
 var Git = require('../../git');
+var utils = require('../../lib/data-utils');
 
 var data =  {
   withCopyHunk: {
@@ -23,7 +24,7 @@ module.exports = {
     test.plan(1);
 
     test.equals(
-      git.applyDelta(data.withCopyHunk.baseData, data.withCopyHunk.delta),
+      utils.applyDelta(data.withCopyHunk.baseData, data.withCopyHunk.delta),
       data.withCopyHunk.expectedResult
     );
   },
@@ -33,7 +34,7 @@ module.exports = {
     test.plan(1);
     
     test.equals(
-      git.applyDelta(data.withManyHunks.baseData, data.withManyHunks.delta),
+      utils.applyDelta(data.withManyHunks.baseData, data.withManyHunks.delta),
       data.withManyHunks.expectedResult
     );
   }
