@@ -12,8 +12,8 @@ module.exports = {
   "unpack: not a buffer" : function(t) {
     t.plan(2);
     pack.unpack('not a buffer', function(err) {
-      t.ok(err);
-      t.ok(err.message.indexOf('expects a buffer') > 0);
+      t.ok(err, 'expected error');
+      t.ok(err.message.indexOf('expects a buffer') > 0, 'found expected buffer error');
       t.end();
     }, noop);
   },
@@ -21,8 +21,8 @@ module.exports = {
   "unpack: invalid signature" : function(t) {
     t.plan(2);
     pack.unpack(new Buffer(['']), function(err) {
-      t.ok(err);
-      t.ok(err.message.indexOf('signature') > 0);
+      t.ok(err, 'expected error');
+      t.ok(err.message.indexOf('signature') > 0, 'found expected signature error');
       t.end();
     }, noop);
   },
@@ -30,7 +30,7 @@ module.exports = {
   "unpack: valid signature" : function(t) {
     t.plan(1);
     pack.unpack(new Buffer('PACK'), function(err) {
-      t.ok(!err || err.message.indexOf('signature') < 0);
+      t.ok(!err || err.message.indexOf('signature') < 0, 'no signature error');
       t.end();
     }, noop);
   },
@@ -44,7 +44,7 @@ module.exports = {
     buffer.write('PACK');
 
     pack.unpack(buffer, function(err) {
-      t.ok(err.message.indexOf('version') > 0);
+      t.ok(err.message.indexOf('version') > 0, 'found expected version error');
       t.end();
     }, noop);
   },
@@ -58,7 +58,7 @@ module.exports = {
     buffer.writeUInt8(6, 7);
 
     pack.unpack(new Buffer('PACK'), function(err) {
-      t.ok(err.message.indexOf('version') > 0);
+      t.ok(err.message.indexOf('version') > 0, 'found expected version error');
       t.end();
     }, noop);
   },
@@ -72,7 +72,7 @@ module.exports = {
     buffer.writeUInt8(2, 7);
 
     pack.unpack(buffer, function(err, obj) {
-      t.ok(!err || err.message.indexOf('version') < 0);
+      t.ok(!err || err.message.indexOf('version') < 0, 'no error');
       t.end();
     }, noop);
   },
@@ -86,7 +86,7 @@ module.exports = {
     buffer.writeUInt8(2, 7);
 
     pack.unpack(buffer, function(err) {
-      t.ok(err.message.indexOf('object count') > 0);
+      t.ok(err.message.indexOf('object count') > 0, 'found expected object count error');
       t.end();
     }, noop);
   },
@@ -101,7 +101,7 @@ module.exports = {
     buffer.writeUInt32BE(150, 8);
 
     pack.unpack(buffer, function(err, obj) {
-      t.ok(!err || err.message.indexOf('object count') < 0);
+      t.ok(!err || err.message.indexOf('object count') < 0, 'no error');
       t.equals(obj.count, 150);
       t.end();
     }, noop);
@@ -133,7 +133,7 @@ module.exports = {
     buffer.writeUInt32BE(150, 8);
 
     pack.unpack(buffer, function(err, obj) {
-      t.ok(err.message.indexOf('object entry') > 0);
+      t.ok(err.message.indexOf('object entry') > 0, 'found expected object entry error');
       t.end();
     }, noop);
   },
@@ -150,7 +150,7 @@ module.exports = {
 
         obj.objects.forEach(function(obj) {
           var verifyObj = packFile.verifyObjs.shift();
-          t.equals(obj.type, objects.stringToType(verifyObj.type));
+          t.equals(obj.type, objects.stringToType(verifyObj.type), 'object types match');
         });
 
         t.end();
@@ -166,9 +166,9 @@ module.exports = {
         packFile.buffer,
         function(err, obj) {},
         function make(type, data) {
-          t.ok(type);
-          t.ok(data);
-          t.ok(Buffer.isBuffer(data));
+          t.ok(type, 'type is ok');
+          t.ok(data, 'data is ok');
+          t.ok(Buffer.isBuffer(data), 'data is a buffer');
         }
       );
     });
