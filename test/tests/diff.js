@@ -1,22 +1,20 @@
 
 var test = require('tap').test;
-var Git = require('../../git');
-
-var git = new Git();
+var FileDiff = require('../../lib/filediff');
 
 module.exports = {
 
   "NullEndpoint: null start": function(test) {
-  
+
     test.plan(1);
 
     var file1 = "";
     var file2 = ["a", "b", "c"].join("\n");
-    var diff = git.FileDiff(file1, file2);
-  
+    var diff = FileDiff(file1, file2);
+
     test.deepEqual(
-      diff.info, 
-      [{offset: 1, 
+      diff.info,
+      [{offset: 1,
         lines: [
           {oldIndex: null, newIndex: 1, line: "a", type:"added"},
           {oldIndex: null, newIndex: 2, line: "b", type:"added"},
@@ -32,11 +30,11 @@ module.exports = {
 
     var file1 = ["a", "b", "c"].join("\n")
     var file2 = ""
-    var diff = git.FileDiff(file1, file2)
-    
+    var diff = FileDiff(file1, file2)
+
     test.deepEqual(
-      diff.info, 
-      [{offset: 1, 
+      diff.info,
+      [{offset: 1,
         lines: [
           {oldIndex: 1, newIndex: null, line: "a", type:"removed"},
           {oldIndex: 2, newIndex: null, line: "b", type:"removed"},
@@ -44,21 +42,21 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
 
   "SingleHunk: additions at end": function(test) {
-    
+
     test.plan(1);
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "c", "d", "e", "f", "g", "h"].join("\n");
 
-    var diff = git.FileDiff(file1, file2);
+    var diff = FileDiff(file1, file2);
 
     test.deepEqual(
-      diff.info, 
-      [{offset: 7, 
+      diff.info,
+      [{offset: 7,
         lines: [
           {oldIndex: 4, newIndex: 4, line: "d", type:"context"},
           {oldIndex: 5, newIndex: 5, line: "e", type:"context"},
@@ -68,21 +66,21 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
-  
+
   "SingleHunk: additions at beginning": function(test) {
 
     test.plan(1);
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n")
     var file2 = ["0", "1", "a", "b", "c", "d", "e", "f"].join("\n")
-    
-    var diff = git.FileDiff(file1, file2);
+
+    var diff = FileDiff(file1, file2);
 
     test.deepEqual(
-      diff.info, 
-      [{offset: 1, 
+      diff.info,
+      [{offset: 1,
         lines: [
           {oldIndex: null, newIndex: 1, line: "0", type:"added"},
           {oldIndex: null, newIndex: 2, line: "1", type:"added"},
@@ -92,21 +90,21 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
-  
+
   "SingleHunk: additions in middle": function(test) {
-    
+
     test.plan(1);
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "c", "0", "1", "d", "e", "f"].join("\n");
 
-    var diff = git.FileDiff(file1, file2);
+    var diff = FileDiff(file1, file2);
 
     test.deepEqual(
-      diff.info, 
-      [{offset: 4, 
+      diff.info,
+      [{offset: 4,
         lines: [
           {oldIndex: 1, newIndex: 1, line: "a", type:"context"},
           {oldIndex: 2, newIndex: 2, line: "b", type:"context"},
@@ -119,20 +117,20 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
-  
+
   "SingleHunk: removals at end": function(test) {
 
     test.plan(1);
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "c", "d"].join("\n");
-    var diff = git.FileDiff(file1, file2);
+    var diff = FileDiff(file1, file2);
 
     test.deepEqual(
-      diff.info, 
-      [{offset: 5, 
+      diff.info,
+      [{offset: 5,
         lines: [
           {oldIndex: 2, newIndex: 2, line: "b", type:"context"},
           {oldIndex: 3, newIndex: 3, line: "c", type:"context"},
@@ -142,21 +140,21 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
-  
+
   "SingleHunk: removals at beginning": function(test) {
 
     test.plan(1);
-    
+
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["c", "d", "e", "f"].join("\n");
-    
-    var diff = git.FileDiff(file1, file2);
-    
+
+    var diff = FileDiff(file1, file2);
+
     test.deepEqual(
-      diff.info, 
-      [{offset: 1, 
+      diff.info,
+      [{offset: 1,
         lines: [
           {oldIndex: 1, newIndex: null, line: "a", type:"removed"},
           {oldIndex: 2, newIndex: null, line: "b", type:"removed"},
@@ -166,21 +164,21 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
-  
+
   "SingleHunk: removals in middle": function(test) {
 
     test.plan(1);
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "e", "f"].join("\n");
-    
-    var diff = git.FileDiff(file1, file2);
-    
+
+    var diff = FileDiff(file1, file2);
+
     test.deepEqual(
-      diff.info, 
-      [{offset: 3, 
+      diff.info,
+      [{offset: 3,
         lines: [
           {oldIndex: 1, newIndex: 1, line: "a", type:"context"},
           {oldIndex: 2, newIndex: 2, line: "b", type:"context"},
@@ -191,21 +189,21 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
-  
+
   "SingleHunk: added and removed in middle of same length": function(test) {
 
     test.plan(1);
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n")
     var file2 = ["a", "b", "0", "1", "e", "f"].join("\n")
-    
-    var diff = git.FileDiff(file1, file2)
-    
+
+    var diff = FileDiff(file1, file2)
+
     test.deepEqual(
-      diff.info, 
-      [{offset: 3, 
+      diff.info,
+      [{offset: 3,
         lines: [
           {oldIndex: 1, newIndex: 1, line: "a", type:"context"},
           {oldIndex: 2, newIndex: 2, line: "b", type:"context"},
@@ -218,21 +216,21 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
-  
+
   "SingleHunk: more added than removed": function(test) {
 
     test.plan(1);
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "0", "1", "2", "3", "e", "f"].join("\n");
-    
-    var diff = git.FileDiff(file1, file2);
-    
+
+    var diff = FileDiff(file1, file2);
+
     test.deepEqual(
-      diff.info, 
-      [{offset: 3, 
+      diff.info,
+      [{offset: 3,
         lines: [
           {oldIndex: 1, newIndex: 1, line: "a", type:"context"},
           {oldIndex: 2, newIndex: 2, line: "b", type:"context"},
@@ -247,21 +245,21 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
-  
+
   "SingleHunk: more removed than added": function(test) {
-    
+
     test.plan(1);
 
     var file1 = ["a", "b", "c", "d", "e", "f"].join("\n");
     var file2 = ["a", "b", "0", "1", "f"].join("\n");
-    
-    var diff = git.FileDiff(file1, file2);
-    
+
+    var diff = FileDiff(file1, file2);
+
     test.deepEqual(
-      diff.info, 
-      [{offset: 3, 
+      diff.info,
+      [{offset: 3,
         lines: [
           {oldIndex: 1, newIndex: 1, line: "a", type:"context"},
           {oldIndex: 2, newIndex: 2, line: "b", type:"context"},
@@ -274,20 +272,20 @@ module.exports = {
         ]}
       ]
     );
-    
+
   },
   "MultipleSeparateHunks: added then added": function(test) {
-    
+
     test.plan(2);
 
     var file1 = "123456789".split("").join("\n")
     var file2 = "123xy4567zq89".split("").join("\n")
-    
-    var diff = git.FileDiff(file1, file2, {context: 1})
-    
+
+    var diff = FileDiff(file1, file2, {context: 1})
+
     test.deepEqual(
-      diff.info[0], 
-      {offset: 4, 
+      diff.info[0],
+      {offset: 4,
         lines: [
           {oldIndex: 3, newIndex: 3, line: "3", type:"context"},
           {oldIndex: null, newIndex: 4, line: "x", type:"added"},
@@ -298,8 +296,8 @@ module.exports = {
     );
 
     test.deepEqual(
-      diff.info[1], 
-      {offset: 10, 
+      diff.info[1],
+      {offset: 10,
         lines: [
           {oldIndex: 7, newIndex: 9, line: "7", type:"context"},
           {oldIndex: null, newIndex: 10, line: "z", type:"added"},
@@ -308,21 +306,21 @@ module.exports = {
         ]
       }
     );
-    
+
   },
-  
+
   "MultipleSeparateHunks: removed then removed": function(test) {
 
     test.plan(2);
 
     var file1 = "123456789".split("").join("\n");
     var file2 = "1345689".split("").join("\n");
-    
-    var diff = git.FileDiff(file1, file2, {context: 1});
+
+    var diff = FileDiff(file1, file2, {context: 1});
 
     test.deepEqual(
-      diff.info[0], 
-      {offset: 2, 
+      diff.info[0],
+      {offset: 2,
         lines: [
           {oldIndex: 1, newIndex: 1, line: "1", type:"context"},
           {oldIndex: 2, newIndex: null, line: "2", type:"removed"},
@@ -332,8 +330,8 @@ module.exports = {
     );
 
     test.deepEqual(
-      diff.info[1], 
-      {offset: 6, 
+      diff.info[1],
+      {offset: 6,
         lines: [
           {oldIndex: 6, newIndex: 5, line: "6", type:"context"},
           {oldIndex: 7, newIndex: null, line: "7", type:"removed"},
@@ -341,21 +339,21 @@ module.exports = {
         ]
       }
     );
-    
+
   },
-  
+
   "MultipleSeparateHunks: added then removed": function(test) {
 
     test.plan(2);
-    
+
     var file1 = "123456789".split("").join("\n")
     var file2 = "123xy45689".split("").join("\n")
-    
-    var diff = git.FileDiff(file1, file2, {context: 1})
-    
+
+    var diff = FileDiff(file1, file2, {context: 1})
+
     test.deepEqual(
-      diff.info[0], 
-      {offset: 4, 
+      diff.info[0],
+      {offset: 4,
         lines: [
           {oldIndex: 3, newIndex: 3, line: "3", type:"context"},
           {oldIndex: null, newIndex: 4, line: "x", type:"added"},
@@ -366,8 +364,8 @@ module.exports = {
     );
 
     test.deepEqual(
-      diff.info[1], 
-      {offset: 9, 
+      diff.info[1],
+      {offset: 9,
         lines: [
           {oldIndex: 6, newIndex: 8, line: "6", type:"context"},
           {oldIndex: 7, newIndex: null, line: "7", type:"removed"},
@@ -375,9 +373,9 @@ module.exports = {
         ]
       }
     );
-    
+
   },
-  
+
   "MultipleSeparateHunks: removed then added": function(test) {
 
     test.plan(2);
@@ -385,11 +383,11 @@ module.exports = {
     var file1 = "123456789".split("").join("\n");
     var file2 = "134567xq89".split("").join("\n");
 
-    var diff = git.FileDiff(file1, file2, {context: 1});
-    
+    var diff = FileDiff(file1, file2, {context: 1});
+
     test.deepEqual(
-      diff.info[0], 
-      {offset: 2, 
+      diff.info[0],
+      {offset: 2,
         lines: [
           {oldIndex: 1, newIndex: 1, line: "1", type:"context"},
           {oldIndex: 2, newIndex: null, line: "2", type:"removed"},
@@ -397,10 +395,10 @@ module.exports = {
         ]
       }
     );
-    
+
     test.deepEqual(
-      diff.info[1], 
-      {offset: 7, 
+      diff.info[1],
+      {offset: 7,
         lines: [
           {oldIndex: 7, newIndex: 6, line: "7", type:"context"},
           {oldIndex: null, newIndex: 7, line: "x", type:"added"},
@@ -416,14 +414,14 @@ module.exports = {
 
     var file1 = "123456789".split("").join("\n");
     var file2 = "123xy4zq56789".split("").join("\n");
-    
-    var diff = git.FileDiff(file1, file2, {context: 1});
-    
+
+    var diff = FileDiff(file1, file2, {context: 1});
+
     test.equal(diff.info.length, 1);
 
     test.deepEqual(
-      diff.info[0], 
-      {offset: 4, 
+      diff.info[0],
+      {offset: 4,
         lines: [
           {oldIndex: 3, newIndex: 3, line: "3", type:"context"},
           {oldIndex: null, newIndex: 4, line: "x", type:"added"},
@@ -435,23 +433,23 @@ module.exports = {
         ]
       }
     );
-    
+
   },
-  
+
   "MultipleConnectedHunks: overlap by 2": function(test) {
 
     test.plan(2);
 
     var file1 = "123456789".split("").join("\n");
     var file2 = "123xy4zq56789".split("").join("\n");
-    
-    var diff = git.FileDiff(file1, file2, {context: 2});
+
+    var diff = FileDiff(file1, file2, {context: 2});
 
     test.equal(diff.info.length, 1);
 
     test.deepEqual(
-      diff.info[0], 
-      {offset: 4, 
+      diff.info[0],
+      {offset: 4,
         lines: [
           {oldIndex: 2, newIndex: 2, line: "2", type:"context"},
           {oldIndex: 3, newIndex: 3, line: "3", type:"context"},
@@ -464,6 +462,6 @@ module.exports = {
           {oldIndex: 6, newIndex: 10, line: "6", type:"context"}
         ]
       }
-    ); 
+    );
   }
 };
