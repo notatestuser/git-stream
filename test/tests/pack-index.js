@@ -65,7 +65,30 @@ module.exports = {
         t.end();
       });
     });
-  }
+  },
+
+  "packfile index: parse stream (fs pipe)" : function(t) {
+    var ps = pack.createParserStream();
+    repo.getPackFile(function(err, packFile) {
+      t.plan(2 + packFile.verifyObjs.length * 2);
+
+      fs.createReadStream(packFile.packFile.replace('.pack', '.idx')).pipe(ps);
+
+      ps.on('end', function(result) {
+        t.ok(result.entries);
+
+        t.equal(packFile.verifyObjs.length, result.entries.length);
+
+        result.entries.forEach(function(entry) {
+          t.equal(entry.sha, packFile.verifyHash[entry.sha].sha);
+          t.equal(entry.offset, packFile.verifyHash[entry.sha].offset);
+        });
+
+        t.end();
+      });
+    });
+  },
+
 
 
   // "unpack: valid object count (real file)" : function(t) {
