@@ -114,9 +114,9 @@ module.exports = {
         // from previous observation, the packfile had 3 objects in it
         // ensure sanity before we assume that we actually parsed the packfile
         // correctly.
-        t.ok(packFile.totalObjects > 0);
+        t.ok(packFile.totalObjects > 0, 'there are more than 0 objects');
 
-        t.equal(obj.count, packFile.totalObjects);
+        t.equal(obj.count, packFile.totalObjects, 'the count is equal');
         t.end();
       });
     });
@@ -132,7 +132,7 @@ module.exports = {
     buffer.writeUInt32BE(150, 8);
 
     unpack(buffer, function(err, obj) {
-      t.ok(err.message.indexOf('object entry') > 0);
+      t.ok(err.message.indexOf('object entry') > 0, 'the message has an entry');
       t.end();
     });
   },
@@ -144,15 +144,15 @@ module.exports = {
       unpack(packFile.buffer, function(err, obj) {
         t.plan(2+obj.objects.length*3);
         // ensure sanity before we assume that we actually parsed the packfile correctly.
-        t.ok(packFile.totalObjects > 0);
-        t.equal(obj.objects.length, packFile.totalObjects);
+        t.ok(packFile.totalObjects > 0, 'the packfie has more than 0 objects');
+        t.equal(obj.objects.length, packFile.totalObjects, 'the number objects in the buffer match the number of objects in the packfile');
 
         var types = ['commit', 'commit', 'tree', 'blob', 'tree', 'blob'];
 
         obj.objects.forEach(function(obj, i) {
-          t.ok(obj.buffer);
-          t.equals(obj.type, types[i]);
-          t.ok(obj.offset);
+          t.ok(obj.buffer, 'got a buffer');
+          t.equals(obj.type, types[i], 'the object is the correct type');
+          t.ok(obj.offset, 'the object has the correct offset');
         });
 
         t.end()
