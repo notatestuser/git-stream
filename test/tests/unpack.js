@@ -166,7 +166,6 @@ module.exports = {
         packFile.buffer,
         function(err, obj) {},
         function make(type, data) {
-          // TODO: sha
           t.ok(type);
           t.ok(data);
           t.ok(Buffer.isBuffer(data));
