@@ -3,35 +3,36 @@ var fs = require('fs');
 var test = require('tap').test;
 var repo = require('../fixtures/repo');
 var Buffer = require('buffer').Buffer;
+var objects = require('../../lib/objects')
 
-var unpack = require('../../lib/unpack');
-
+var pack = require('../../lib/pack');
+var noop = function() { return null };
 
 module.exports = {
   "unpack: not a buffer" : function(t) {
     t.plan(2);
-    unpack('not a buffer', function(err) {
+    pack.unpack('not a buffer', function(err) {
       t.ok(err);
       t.ok(err.message.indexOf('expects a buffer') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: invalid signature" : function(t) {
     t.plan(2);
-    unpack(new Buffer(['']), function(err) {
+    pack.unpack(new Buffer(['']), function(err) {
       t.ok(err);
       t.ok(err.message.indexOf('signature') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: valid signature" : function(t) {
     t.plan(1);
-    unpack(new Buffer('PACK'), function(err) {
+    pack.unpack(new Buffer('PACK'), function(err) {
       t.ok(!err || err.message.indexOf('signature') < 0);
       t.end();
-    });
+    }, noop);
   },
 
 
@@ -42,10 +43,10 @@ module.exports = {
     buffer.fill(0);
     buffer.write('PACK');
 
-    unpack(buffer, function(err) {
+    pack.unpack(buffer, function(err) {
       t.ok(err.message.indexOf('version') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: invalid version (value)" : function(t) {
@@ -56,10 +57,10 @@ module.exports = {
     buffer.write('PACK');
     buffer.writeUInt8(6, 7);
 
-    unpack(new Buffer('PACK'), function(err) {
+    pack.unpack(new Buffer('PACK'), function(err) {
       t.ok(err.message.indexOf('version') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: valid version" : function(t) {
@@ -70,10 +71,10 @@ module.exports = {
     buffer.write('PACK');
     buffer.writeUInt8(2, 7);
 
-    unpack(buffer, function(err, obj) {
+    pack.unpack(buffer, function(err, obj) {
       t.ok(!err || err.message.indexOf('version') < 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: invalid object count (buffer length)" : function(t) {
@@ -84,10 +85,10 @@ module.exports = {
     buffer.write('PACK');
     buffer.writeUInt8(2, 7);
 
-    unpack(buffer, function(err) {
+    pack.unpack(buffer, function(err) {
       t.ok(err.message.indexOf('object count') > 0);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: valid object count" : function(t) {
@@ -99,17 +100,17 @@ module.exports = {
     buffer.writeUInt8(2, 7);
     buffer.writeUInt32BE(150, 8);
 
-    unpack(buffer, function(err, obj) {
+    pack.unpack(buffer, function(err, obj) {
       t.ok(!err || err.message.indexOf('object count') < 0);
       t.equals(obj.count, 150);
       t.end();
-    });
+    }, noop);
   },
 
   "unpack: valid object count (real file)" : function(t) {
     t.plan(2);
     repo.getPackFile(function(err, packFile) {
-      unpack(packFile.buffer, function(err, obj) {
+      pack.unpack(packFile.buffer, function(err, obj) {
 
         // from previous observation, the packfile had 3 objects in it
         // ensure sanity before we assume that we actually parsed the packfile
@@ -118,7 +119,7 @@ module.exports = {
 
         t.equal(obj.count, packFile.totalObjects, 'the count is equal');
         t.end();
-      });
+      }, noop);
     });
   },
 
@@ -131,34 +132,47 @@ module.exports = {
     buffer.writeUInt8(2, 7);
     buffer.writeUInt32BE(150, 8);
 
-    unpack(buffer, function(err, obj) {
-      t.ok(err.message.indexOf('object entry') > 0, 'the message has an entry');
+    pack.unpack(buffer, function(err, obj) {
+      t.ok(err.message.indexOf('object entry') > 0);
       t.end();
-    });
+    }, noop);
   },
 
 
   "unpack: valid object entries (real file)" : function(t) {
 
     repo.getPackFile(function(err, packFile) {
-      unpack(packFile.buffer, function(err, obj) {
-        t.plan(2+obj.objects.length*3);
+      pack.unpack(packFile.buffer, function(err, obj) {
+        t.plan(2+obj.objects.length);
         // ensure sanity before we assume that we actually parsed the packfile correctly.
         t.ok(packFile.totalObjects > 0, 'the packfie has more than 0 objects');
         t.equal(obj.objects.length, packFile.totalObjects, 'the number objects in the buffer match the number of objects in the packfile');
 
-        var types = ['commit', 'commit', 'tree', 'blob', 'tree', 'blob'];
-
-        obj.objects.forEach(function(obj, i) {
-          t.ok(obj.buffer, 'got a buffer');
-          t.equals(obj.type, types[i], 'the object is the correct type');
-          t.ok(obj.offset, 'the object has the correct offset');
+        obj.objects.forEach(function(obj) {
+          var verifyObj = packFile.verifyObjs.shift();
+          t.equals(obj.type, objects.stringToType(verifyObj.type));
         });
 
-        t.end()
+        t.end();
       });
     });
   },
+
+  "unpack: injection of make for testing object creation" : function(t) {
+    repo.getPackFile(function(err, packFile) {
+      // subtract 3 which includes summary, status, newline
+      t.plan((packFile.verifyString.split('\n').length - 3)*3);
+      pack.unpack(
+        packFile.buffer,
+        function(err, obj) {},
+        function make(type, data) {
+          t.ok(type);
+          t.ok(data);
+          t.ok(Buffer.isBuffer(data));
+        }
+      );
+    });
+  }
 
 
   /*
