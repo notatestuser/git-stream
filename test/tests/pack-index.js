@@ -43,10 +43,29 @@ module.exports = {
     });
   },
 
-  // "packfile index: parse stream (one large chunk)" : function(t) {
+  "packfile index: parse stream (one large chunk)" : function(t) {
+    var ps = pack.createParserStream();
+    repo.getPackFile(function(err, packFile) {
+      t.plan(2 + packFile.verifyObjs.length * 2)
+      // delay for binds, and flow of code
+      process.nextTick(function() {
+        ps.write(packFile.indexBuffer);
+      });
 
-  //   t.end();
-  // }
+      ps.on('end', function(result) {
+        t.ok(result.entries);
+
+        t.equal(packFile.verifyObjs.length, result.entries.length);
+
+        result.entries.forEach(function(entry) {
+          t.equal(entry.sha, packFile.verifyHash[entry.sha].sha);
+          t.equal(entry.offset, packFile.verifyHash[entry.sha].offset);
+        });
+
+        t.end();
+      });
+    });
+  }
 
 
   // "unpack: valid object count (real file)" : function(t) {
