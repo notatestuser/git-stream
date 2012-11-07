@@ -9,12 +9,6 @@ var pack = require('../../lib/pack');
 var noop = function() { return null };
 
 module.exports = {
-  "packfile index: create parser stream (sanity)" : function(t) {
-    var s = pack.createParserStream();
-    t.ok(s);
-    t.ok(s.pipe);
-    t.end();
-  },
 
   "packfile index: parse stream (one byte at a time)" : function(t) {
     var ps = pack.createParserStream();
@@ -29,13 +23,13 @@ module.exports = {
       });
 
       ps.on('end', function(result) {
-        t.ok(result.entries);
+        t.ok(result.entries, 'found entries');
 
         t.equal(packFile.verifyObjs.length, result.entries.length);
 
         result.entries.forEach(function(entry) {
-          t.equal(entry.sha, packFile.verifyHash[entry.sha].sha);
-          t.equal(entry.offset, packFile.verifyHash[entry.sha].offset);
+          t.equal(entry.sha, packFile.verifyHash[entry.sha].sha, 'sha matches expected');
+          t.equal(entry.offset, packFile.verifyHash[entry.sha].offset, 'offset matches expected');
         });
 
         t.end();
@@ -53,13 +47,13 @@ module.exports = {
       });
 
       ps.on('end', function(result) {
-        t.ok(result.entries);
+        t.ok(result.entries, 'found entries');
 
         t.equal(packFile.verifyObjs.length, result.entries.length);
 
         result.entries.forEach(function(entry) {
-          t.equal(entry.sha, packFile.verifyHash[entry.sha].sha);
-          t.equal(entry.offset, packFile.verifyHash[entry.sha].offset);
+          t.equal(entry.sha, packFile.verifyHash[entry.sha].sha, 'sha matches expected');
+          t.equal(entry.offset, packFile.verifyHash[entry.sha].offset, 'offset matches expected');
         });
 
         t.end();
@@ -75,13 +69,13 @@ module.exports = {
       fs.createReadStream(packFile.packFile.replace('.pack', '.idx')).pipe(ps);
 
       ps.on('end', function(result) {
-        t.ok(result.entries);
+        t.ok(result.entries, 'found entries');
 
         t.equal(packFile.verifyObjs.length, result.entries.length);
 
         result.entries.forEach(function(entry) {
-          t.equal(entry.sha, packFile.verifyHash[entry.sha].sha);
-          t.equal(entry.offset, packFile.verifyHash[entry.sha].offset);
+          t.equal(entry.sha, packFile.verifyHash[entry.sha].sha, 'sha matches expected');
+          t.equal(entry.offset, packFile.verifyHash[entry.sha].offset, 'offset matches expected');
         });
 
         t.end();
