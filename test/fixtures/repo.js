@@ -29,17 +29,22 @@ module.exports.getPackFile = function(fn) {
             var verifyParts = verifyString.split('\n'), verifyObjs = [];
             verifyParts.pop();
             verifyParts.pop();
+            verifyParts.pop();
+            var verifyHash = {};
 
             verifyParts.forEach(function(line) {
-              var parts = line.split(' ');
+              var parts = line.replace(/[ ]+/g, ' ').split(' ');
+
+              var sha = parts.shift();
               var obj = {
-                sha : parts.shift(),
+                sha : sha,
                 type : parts.shift(),
-                uncompressedSize : parts.shift(),
-                compressedSize : parts.shift(),
-                offset : parts.shift(),
+                uncompressedSize : parseInt(parts.shift(), 10),
+                compressedSize : parseInt(parts.shift(), 10),
+                offset : parseInt(parts.shift(), 10)
               };
               verifyObjs.push(obj);
+              verifyHash[sha] = obj;
             });
 
 
@@ -54,19 +59,23 @@ module.exports.getPackFile = function(fn) {
 
                 var packFile = files[0];
 
-                fs.readFile(packFile, function(err, buffer) {
+                fs.readFile(packFile, function(err, packFileBuffer) {
                   if (err) throw err;
 
+                  fs.readFile(packFile.replace('.pack', '.idx'), function(err, indexBuffer) {
 
-                  // cleanup
-                  rimraf(packRepoPath, function() {
-                     fn(null, {
-                       totalObjects: count,
-                       buffer: buffer,
-                       verifyString: verifyString,
-                       verifyObjs: verifyObjs
-                     });
-                  });
+                    // cleanup
+                    //rimraf(packRepoPath, function() {
+                       fn(null, {
+                         totalObjects: count,
+                         buffer: packFileBuffer,
+                         indexBuffer: indexBuffer,
+                         verifyString: verifyString,
+                         verifyObjs: verifyObjs,
+                         verifyHash: verifyHash
+                       });
+                    //});
+                  })
                 });
               });
             });
