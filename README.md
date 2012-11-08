@@ -4,23 +4,42 @@
 ```js
 var gitstream = require('git-stream')
 
-var r = gitstream.Repo()
+//
+// An in-memory representation of the repository
+// this does not include all of the files, only
+// the git components such as trees and blobs.
+//
+// A path to where this information is kept can 
+// be specified. `createRepo()` returns an instace
+// of the Repo constructor which is a duplex stream.
+//
+var r = gitstream.createRepo()
 
 //
-// get a repo from disk
+// add a remote (an in memory operation) currently
+// only supports the tcp transport protocol.
 //
-// r.read('./repoA').pipe(r.push('origin', 'master'))
-
-//
-// add a remote
-//
-
 r.remote.add({
   name: 'origin',
   branch: 'master',
-  port: 8000,
-  address: '127.0.0.1',
-  id: 'username/origin'
+  host: '127.0.0.1',
+  port: '8000',
+  path: '/foo/bar'
+})
+
+//
+// or read the config from the repo and get a
+// remote from there.
+//
+r.readConfig({ path: './git' }, function(config) {
+
+  var origin = config.remote.origin;
+
+  r.pull('origin')
+    .pipe(r.add(file))
+    .pipe(r.commit({ m: 'first commit!' }))
+    .pipe(r.push('origin'))
+
 })
 
 var file = fs.createReadStream('./README.md')
@@ -28,10 +47,6 @@ var file = fs.createReadStream('./README.md')
 //
 // add a file, commit it and push it to the remote
 //
-r.pull('origin')
-  .pipe(r.add(file))
-  .pipe(r.commit({ m: 'first commit!' }))
-  .pipe(r.push('origin'))
 
 ```
 
