@@ -37,9 +37,11 @@ Git.prototype.end = function(data) {
 
 Git.prototype.remote = require('./lib/remote');
 
+/*
 Git.prototype.Diff = require('./lib/diff');
 Git.prototype.push = require('./lib/push');
 Git.prototype.pull = require('./lib/pull');
 
 Git.prototype.add = require('./lib/add');
 Git.prototype.commit = require('./lib/commit');
+*/
