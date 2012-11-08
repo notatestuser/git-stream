@@ -1,4 +1,3 @@
-
 # As a client
 
 ```js
@@ -8,10 +7,6 @@ var gitstream = require('git-stream')
 // An in-memory representation of the repository
 // this does not include all of the files, only
 // the git components such as trees and blobs.
-//
-// A path to where this information is kept can 
-// be specified. `createRepo()` returns an instace
-// of the Repo constructor which is a duplex stream.
 //
 var r = gitstream.createRepo()
 
@@ -35,18 +30,17 @@ r.readConfig({ path: './git' }, function(config) {
 
   var origin = config.remote.origin;
 
+  //
+  // add a file, commit it and push it to the remote
+  //
+  var file = fs.createReadStream('./README.md')
+
   r.pull('origin')
     .pipe(r.add(file))
     .pipe(r.commit({ m: 'first commit!' }))
     .pipe(r.push('origin'))
 
 })
-
-var file = fs.createReadStream('./README.md')
-
-//
-// add a file, commit it and push it to the remote
-//
 
 ```
 
