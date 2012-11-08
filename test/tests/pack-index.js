@@ -54,7 +54,6 @@ module.exports = {
         result.entries.forEach(function(entry) {
           t.equal(entry.sha, packFile.verifyHash[entry.sha].sha, 'sha matches expected');
           t.equal(entry.offset, packFile.verifyHash[entry.sha].offset, 'offset matches expected');
-
         });
 
         t.end();

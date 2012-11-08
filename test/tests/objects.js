@@ -48,7 +48,6 @@ module.exports = {
 
     var commit = objects.createObject(objects.COMMIT);
     t.equal(commit.type, objects.COMMIT, 'types match');
-
     t.end();
   },
 
