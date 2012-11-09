@@ -34,6 +34,7 @@ module.exports.getPackFile = function(fn) {
               }
               verifyParts.pop();
             }
+            verifyString = verifyParts.join('\n');
 
             var verifyHash = {};
 
