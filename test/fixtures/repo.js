@@ -67,6 +67,7 @@ module.exports.getPackFile = function(fn) {
                     // cleanup
                     //rimraf(packRepoPath, function() {
                        fn(null, {
+                         repoDirectory: packRepoPath + '.git/',
                          packFile: packFile,
                          totalObjects: count,
                          buffer: packFileBuffer,
