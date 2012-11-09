@@ -31,7 +31,7 @@ r.remote.add({
 // or read the config from the repo and get a
 // remote from there.
 //
-r.readConfig({ path: './git' }, function(config) {
+r.config.getAll({ path: './git' }, function(config) {
 
   var origin = config.remote.origin;
 

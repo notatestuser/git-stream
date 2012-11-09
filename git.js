@@ -3,6 +3,7 @@
 //
 var helpers = require('./common/helpers');
 var util = require('util');
+var net = require('net');
 var Stream = require("stream").Stream;
 
 var stream = new Stream();
@@ -42,9 +43,4 @@ Git.prototype.diff = require('./lib/diff');
 
 /*
 
-Git.prototype.push = require('./lib/push');
-Git.prototype.pull = require('./lib/pull');
-
-Git.prototype.add = require('./lib/add');
-Git.prototype.commit = require('./lib/commit');
 */
