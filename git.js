@@ -41,6 +41,3 @@ Git.prototype.end = function(data) {
 Git.prototype.remote = require('./lib/remote');
 Git.prototype.diff = require('./lib/diff');
 
-/*
-
-*/

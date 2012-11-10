@@ -59,13 +59,10 @@ net.createServer(function(socket) {
   //
   // when the socket connects and gets data
   //
-  socket.on('data', function(data) {
-
-    data
-      .pipe(gitstream.Repo())
-      .pipe(gitstream.checkout('master'))
-      .on('file', onfile)
-  })
+  socket
+    .pipe(gitstream.Repo())
+    .pipe(gitstream.checkout('master'))
+    .on('file', onfile)
 
 }).listen(8000)
 
