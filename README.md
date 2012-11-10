@@ -68,7 +68,8 @@ net.createServer(function(socket) {
 
 var onfile = function(filename, file) {
   if (!file.isDirectory) {
-    fs.createWriteStream(filename).pipe(file);
+
+    file.pipe(fs.createWriteStream(filename));
   }
 }
 ```
