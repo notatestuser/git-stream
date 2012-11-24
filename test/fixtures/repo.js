@@ -27,9 +27,15 @@ module.exports.getPackFile = function(fn) {
           exec('git verify-pack -v .git/objects/pack/pack-*.idx', packRepoOpts, function(e, verifyString) {
 
             var verifyParts = verifyString.split('\n'), verifyObjs = [];
-            verifyParts.pop();
-            verifyParts.pop();
-            verifyParts.pop();
+            var current = verifyParts.length;
+            while(current--) {
+              if (verifyParts[current].match(/^[0-9a-z]{20}/)) {
+                break;
+              }
+              verifyParts.pop();
+            }
+            verifyString = verifyParts.join('\n');
+
             var verifyHash = {};
 
             verifyParts.forEach(function(line) {
@@ -67,6 +73,7 @@ module.exports.getPackFile = function(fn) {
                     // cleanup
                     //rimraf(packRepoPath, function() {
                        fn(null, {
+                         repoDirectory: packRepoPath + '.git/',
                          packFile: packFile,
                          totalObjects: count,
                          buffer: packFileBuffer,

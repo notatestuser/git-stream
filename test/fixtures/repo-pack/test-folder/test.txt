@@ -1,0 +1,19 @@
+ The signature for this extension is { 'T', 'R', 'E', 'E' }.
+
+  A series of entries fill the entire extension; each of which
+  consists of:
+
+  - NUL-terminated path component (relative to its parent directory);
+
+  - ASCII decimal number of entries in the index that is covered by the
+    tree this entry represents (entry_count);
+
+  - A space (ASCII 32);
+
+  - ASCII decimal number that represents the number of subtrees this
+    tree has;
+
+  - A newline (ASCII 10); and
+
+  - 160-bit object name for the object that would result from writing
+    this span of index as a tree.
