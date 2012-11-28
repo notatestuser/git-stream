@@ -8,39 +8,29 @@ var gitstream = require('git-stream')
 // this does not include all of the files, only
 // the git components such as trees and blobs.
 //
-var r = gitstream.createRepo()
+var repo = gitstream.createRepo({ path: './fixtures/a/a' })
 
-//
-// add a remote (an in memory operation) currently
-// only supports the tcp transport protocol.
-//
-r.remote.add({
+repo.remote.add({
   name: 'origin',
   branch: 'master',
   host: '127.0.0.1',
   port: '8000',
-  path: '/foo/bar'
+  path: '/fixtures/a/b'
 })
 
 //
-// or read the config from the repo and get a
-// remote from there.
+// add some stuff, commit and push it to the remote
 //
-r.config.getAll({ path: './git' }, function(config) {
+var file = fs.createReadStream('./README.md')
+var reader = fstream.Reader({ path: repo.path })
 
-  var origin = config.remote.origin;
+repo.pull('origin')
 
-  //
-  // add a file, commit it and push it to the remote
-  //
-  var file = fs.createReadStream('./README.md')
+  .pipe(repo.add(file))
+  .pipe(repo.add(reader))
 
-  r.pull('origin')
-    .pipe(r.add(file))
-    .pipe(r.commit({ m: 'first commit!' }))
-    .pipe(r.push('origin'))
-
-})
+  .pipe(repo.commit ({ m: 'first commit!' }))
+  .pipe(repo.push('origin'))
 
 ```
 
@@ -59,10 +49,13 @@ net.createServer(function(socket) {
   //
   // when the socket connects and gets data
   //
+  var repo = git.createRepo({ path: '/fixtures/b' })
+  var writer = fstream.Writer({ path: repo.path })
+
   socket
-    .pipe(gitstream.Repo())
-    .pipe(gitstream.checkout('master'))
-    .on('file', onfile)
+    .pipe(repo)
+    .pipe(repo.checkout('master'))
+    .pipe(writer)
 
 }).listen(8000)
 
