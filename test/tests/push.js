@@ -1,12 +1,12 @@
 
 var test = require('tap').test
-var Gitstream = require('../../git-stream')
+//var Gitstream = require('../../git-stream')
 
-var git = new Gitstream()
+//var git = new Gitstream()
 
 module.exports = {
 
-  "A repo should receive a push from another repo": function(test) {
+  /* "A repo should receive a push from another repo": function(test) {
 
     test.plan(1)
 
@@ -38,5 +38,5 @@ module.exports = {
 
     }).listen(8000)
 
-  })
+  } */
 }

@@ -1,6 +1,6 @@
 
 var test = require('tap').test;
-var FileDiff = require('../../lib/filediff');
+var FileDiff = require('../../common/diff');
 
 module.exports = {
 
